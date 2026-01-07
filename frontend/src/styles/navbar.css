@@ -1,0 +1,37 @@
+.top-bar {
+  background: black;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  padding: 6px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  color: black;
+}
+
+.nav-links a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.nav-icons a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: black;
+}
+
