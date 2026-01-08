@@ -2,20 +2,11 @@
   padding: 40px;
 }
 
-.bike-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+/* full-bleed override */
+.bikes-page .bike-grid {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
 }
 
-.bike-card {
-  border: 1px solid #eee;
-  padding: 20px;
-}
-
-.bike-image {
-  height: 200px;
-  background: #ccc;
-  margin-bottom: 15px;
-}
 
