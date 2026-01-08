@@ -1,12 +1,124 @@
+/* Page wrapper */
 .bikes-page {
   padding: 40px;
 }
 
-/* full-bleed override */
-.bikes-page .bike-grid {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+/* Main container */
+.bikes-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
 }
 
+/* Page title */
+.bikes-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 24px;
+  font-size: 26px;
+}
+
+/* GRID: exactly 3 per row */
+.bikes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .bikes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .bikes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.bike-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect */
+.bike-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.bike-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bike-header h2 {
+  font-size: 16px;
+  color: #2c3e50;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Price */
+.bike-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #27ae60;
+}
+
+/* Description */
+.bike-desc {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 8px;
+
+  /* clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Meta info */
+.bike-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #777;
+}
+
+/* Loading & error */
+.bikes-loading,
+.bikes-error {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 50px;
+  color: #c0392b;
+}
+.add-cart-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.add-cart-btn:hover {
+  background: #333;
+}
 

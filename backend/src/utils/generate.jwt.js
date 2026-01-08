@@ -1,9 +1,10 @@
 const jwt =require("jsonwebtoken");
 
-const generatejwt =(userId,username)=>{
+const generatejwt =(userId,username,role)=>{
 	try{
 		const payLoad={
 			id:userId,
+			role:role,
 			username,
 		}
 		const token = jwt.sign(payLoad,process.env.JWT_SECRET,{

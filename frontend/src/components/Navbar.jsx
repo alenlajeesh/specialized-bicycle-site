@@ -20,6 +20,8 @@ function Navbar() {
         <div className="nav-icons">
           <Link to="/login">Login</Link>
           <Link to="/cart">Cart</Link>
+		  <Link to="/dashboard">Profile</Link>
+
         </div>
       </header>
     </>

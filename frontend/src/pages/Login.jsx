@@ -48,7 +48,7 @@ function Login() {
 
       alert("Logged in successfully!");
       // Optional: redirect to dashboard or home page
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     } catch (err) {
       setError("Something went wrong. Try again.");
     }
