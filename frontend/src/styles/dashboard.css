@@ -1,0 +1,110 @@
+.dashboard-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f7f7f7;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-container h1 {
+  text-align: center;
+  color: #333;
+}
+
+.dashboard-container p {
+  text-align: center;
+  color: #555;
+}
+
+.admin-section, .user-section {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.admin-section h2 {
+  color: #c0392b;
+}
+
+.user-section h2 {
+  color: #2980b9;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.dashboard-error {
+  color: red;
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+}
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.product-form input,
+.product-form select,
+.product-form textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.product-form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.product-form label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-form button {
+  padding: 10px;
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product-form button:hover {
+  background-color: #219150;
+}
+
+.product-error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.product-success {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+

@@ -1,33 +1,69 @@
 .hero {
-  display: flex;
-  height: 80vh;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px); /* adjust if navbar height differs */
+  overflow: hidden;
 }
 
+/* Full background image */
+.hero-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark overlay for readability */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.35) 35%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  z-index: 1;
+}
+
+/* Text on top of image */
 .hero-text {
-  flex: 1;
-  padding: 80px;
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 420px;
+  padding: 100px 80px;
 }
 
+/* Small headline */
+.hero-text .tagline {
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+/* Main headline */
 .hero-text h1 {
-  font-size: 48px;
-  margin: 20px 0;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 30px;
 }
 
+/* Button */
 .hero-text button {
-  padding: 12px 24px;
   background: black;
   color: white;
   border: none;
+  padding: 14px 28px;
+  font-size: 14px;
   cursor: pointer;
-}
-
-.hero-image {
-  flex: 1;
-}
-
-.image-placeholder {
-  width: 100%;
-  height: 100%;
-  background: #ddd;
 }
 

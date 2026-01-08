@@ -11,10 +11,7 @@ exports.getAllproducts=async(req,res,next)=>{
 	}catch(err){
 		next(err);
 	}
-	
-	
 }
-
 exports.getAProduct=async (req,res,next)=>{
 	try{
 		const id =req.params.id;
@@ -23,7 +20,6 @@ exports.getAProduct=async (req,res,next)=>{
 		if(!product){
 			return next(new ApiError(404,"Product not found"))
 		}
-
 		res.json({
 			data:product
 		})
@@ -32,7 +28,6 @@ exports.getAProduct=async (req,res,next)=>{
 		next(err);
 	}
 }
-
 exports.createProduct=async(req,res,next)=>{
 	try{
 		const {name,price,color,size,stock,category,description}=req.body;
@@ -40,19 +35,14 @@ exports.createProduct=async(req,res,next)=>{
 		if(!name||!price||!color||!size||!category||!description||!stock){
 			return next(new ApiError(204,"Fill all the info"));
 		}
-
-
 		const product=new Product({name,price,color,size,stock,category,description})
 		await product.save()
 		res.status(201).json({
 			message:"Product Created",
 			product});
-
-
 	}catch(err){
 		next(err);
 	}
-	
 }
 
 exports.updateProduct= async (req,res,next)=>{
@@ -62,11 +52,9 @@ exports.updateProduct= async (req,res,next)=>{
 		if(!product){
 			return next(new ApiError(404,"Product Not found"));
 		}
-
 		res.json({
 			data:product
 		})
-
 	}catch(err){
 		next(err);
 	}

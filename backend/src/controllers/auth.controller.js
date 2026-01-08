@@ -53,7 +53,7 @@ exports.loginAuth=async(req,res,next)=>{
 			return next(new ApiError(401,"Wrong Password"));
 		}
 
-		const token =generatejwt(user._id,user.username);
+		const token =generatejwt(user._id,user.username,user.role);
 		res.json({
 			success:true,
 			message:"Successfully Logged in",

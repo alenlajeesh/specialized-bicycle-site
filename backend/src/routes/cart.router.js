@@ -9,7 +9,7 @@ const {
 
 router.get("/",authMiddleware,getAllCartItem);
 router.post("/add",authMiddleware,addCartItem);
-router.patch("/update",authMiddleware,updateCartItem);
+router.put("/update",authMiddleware,updateCartItem);
 router.delete("/:id",authMiddleware,deleteCartItem);
 
 module.exports= router;

@@ -1,0 +1,48 @@
+.shop-section {
+  padding: 60px 80px;
+}
+
+.shop-section h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.shop-cards {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+}
+
+.shop-card {
+  position: relative;
+  min-width: 280px;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.shop-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shop-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0)
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.shop-overlay h3 {
+  color: white;
+  font-size: 20px;
+}
+
