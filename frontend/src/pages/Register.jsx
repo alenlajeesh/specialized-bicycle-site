@@ -30,7 +30,7 @@ function Register() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/register", {
+      const res = await fetch("http://localhost:3000/api/v1/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,6 +51,7 @@ function Register() {
 
       // ✅ success (later you can redirect to login)
       alert("Account created successfully!");
+		 window.location.href = "/login";
     } catch (err) {
       setError("Something went wrong. Try again.");
     }

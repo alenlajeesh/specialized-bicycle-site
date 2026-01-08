@@ -1,21 +1,92 @@
+import { useState } from "react";
 import "../styles/auth.css";
 
 function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const { email, password } = formData;
+
+    if (!email || !password) {
+      setError("Please enter email and password");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // Save token in localStorage (or context)
+      localStorage.setItem("token", data.token);
+
+      alert("Logged in successfully!");
+      // Optional: redirect to dashboard or home page
+      window.location.href = "/";
+    } catch (err) {
+      setError("Something went wrong. Try again.");
+    }
+  };
+
   return (
-    <div className="auth-container">
+    <form className="auth-container" onSubmit={handleSubmit}>
       <h2>Sign in to your Account</h2>
 
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
+      {error && <p className="auth-error">{error}</p>}
 
-      <button disabled>Sign In</button>
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
+
+      <input
+        name="password"
+        type="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
+
+      <button type="submit">Sign In</button>
 
       <p>
         Don’t have an account? <a href="/register">Create Account</a>
       </p>
-    </div>
+    </form>
   );
 }
 
 export default Login;
+
 
