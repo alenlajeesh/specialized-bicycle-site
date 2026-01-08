@@ -5,22 +5,26 @@ function Bikes() {
   const [bikes, setBikes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchBikes = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/products");
+        const res = await fetch("http://localhost:3000/api/v1/products", {
+          headers: token
+            ? { Authorization: `Bearer ${token}` }
+            : undefined,
+        });
         const data = await res.json();
 
         if (!res.ok) {
-          setError("Failed to fetch bikes");
+          setError(data.message || "Failed to fetch bikes");
           return;
         }
 
-        // backend returns { products: [...] }
-        setBikes(data.products);
+        setBikes(data.products); // backend returns { products: [...] }
       } catch {
         setError("Something went wrong");
       } finally {
@@ -28,8 +32,18 @@ function Bikes() {
       }
     };
 
+    // decode token to check if user is admin
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUser(payload); // should contain role
+      } catch (err) {
+        console.log("Invalid token", err);
+      }
+    }
+
     fetchBikes();
-  }, []);
+  }, [token]);
 
   const addToCart = async (productId) => {
     if (!token) {
@@ -44,10 +58,7 @@ function Bikes() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          productId,
-          quantity: 1,
-        }),
+        body: JSON.stringify({ productId, quantity: 1 }),
       });
 
       if (!res.ok) throw new Error("Failed to add to cart");
@@ -55,6 +66,26 @@ function Bikes() {
       alert("Added to cart 🛒");
     } catch (err) {
       alert("Error adding to cart");
+    }
+  };
+
+  const deleteBike = async (productId) => {
+    if (!window.confirm("Are you sure you want to delete this bike?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/products/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to delete bike");
+
+      // refresh bikes list
+      setBikes(bikes.filter((bike) => bike._id !== productId));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -82,6 +113,16 @@ function Bikes() {
             >
               Add to Cart
             </button>
+
+            {/* Admin delete button */}
+            {user?.role === "admin" && (
+              <button
+                className="bike-delete"
+                onClick={() => deleteBike(bike._id)}
+              >
+                Delete
+              </button>
+            )}
           </div>
         ))}
       </div>

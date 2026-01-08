@@ -122,3 +122,19 @@
   background: #333;
 }
 
+.bike-delete {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.bike-delete:hover {
+  background-color: #c0392b;
+}
+
