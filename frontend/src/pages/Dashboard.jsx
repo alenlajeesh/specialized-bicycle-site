@@ -4,7 +4,7 @@ import "../styles/dashboard.css";
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Product form state
   const [productData, setProductData] = useState({
     name: "",

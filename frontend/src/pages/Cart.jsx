@@ -9,7 +9,7 @@ function Cart() {
 
   const token = localStorage.getItem("token");
 
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const fetchCart = useCallback(async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/v1/cart`, {
