@@ -4,7 +4,7 @@ import "../styles/dashboard.css";
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   // Product form state
   const [productData, setProductData] = useState({
     name: "",
@@ -64,7 +64,7 @@ function Dashboard() {
     formData.append("image", selectedFile);
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/image", {
+      const res = await fetch(`${BASE_URL}/api/v1/image`, {
         method: "POST",
         body: formData,
       });
@@ -102,7 +102,7 @@ function Dashboard() {
       const productToSend = { ...productData, imageUrl };
 
       // 3️⃣ Send product data to backend
-      const res = await fetch("http://localhost:3000/api/v1/products", {
+      const res = await fetch(`${BASE_URL}/api/v1/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
