@@ -1,6 +1,6 @@
 import "../styles/bikeGrid.css";
 
-// placeholder images for now (swap later easily)
+// placeholder images
 import tarmacImg from "../assets/bike5.webp";
 import turboLevoImg from "../assets/bike6.webp";
 import epicImg from "../assets/bike7.webp";
@@ -58,5 +58,4 @@ function BikeGrid() {
 }
 
 export default BikeGrid;
-
 

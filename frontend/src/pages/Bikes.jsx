@@ -93,41 +93,41 @@ function Bikes() {
   if (error) return <p className="bikes-error">{error}</p>;
 
   return (
-    <div className="bikes-containers">
-      <h1>Available Bikes</h1>
+		<div className="bikes-container">
+  <h1>Available Bikes</h1>
 
-      <div className="bikes-grid">
-        {bikes.map((bike) => (
-          <div key={bike._id} className="bike-card">
-            <h2>{bike.name}</h2>
-            <p className="bike-desc">{bike.description}</p>
+  <div className="products-grid">
+    {bikes.map((bike) => (
+      <div key={bike._id} className="product-card">
+        <h2>{bike.name}</h2>
+        <p className="bike-desc">{bike.description}</p>
 
-            <div className="bike-meta">
-              <span>₹{bike.price}</span>
-              <span>Stock: {bike.stock}</span>
-            </div>
+        <div className="bike-meta">
+          <span>₹{bike.price}</span>
+          <span>Stock: {bike.stock}</span>
+        </div>
 
-            <button
-              className="add-cart-btn"
-              onClick={() => addToCart(bike._id)}
-            >
-              Add to Cart
-            </button>
+        <button
+          className="add-cart-btn"
+          onClick={() => addToCart(bike._id)}
+        >
+          Add to Cart
+        </button>
 
-            {/* Admin delete button */}
-            {user?.role === "admin" && (
-              <button
-                className="bike-delete"
-                onClick={() => deleteBike(bike._id)}
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        ))}
+        {user?.role === "admin" && (
+          <button
+            className="bike-delete"
+            onClick={() => deleteBike(bike._id)}
+          >
+            Delete
+          </button>
+        )}
       </div>
-    </div>
-  );
+    ))}
+  </div>
+</div>
+
+	);
 }
 
 export default Bikes;
