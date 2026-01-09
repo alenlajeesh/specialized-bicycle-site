@@ -9,12 +9,7 @@ function Cart() {
 
   const token = localStorage.getItem("token");
 
-  /**
-   * SAFE cart fetch
-   * - Handles 500
-   * - Handles empty cart
-   * - Never crashes UI
-   */
+  
   const fetchCart = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:3000/api/v1/cart", {
@@ -105,7 +100,7 @@ function Cart() {
           .filter((item) => item?.productId) // 🔥 critical safety guard
           .map((item) => (
             <div key={item.productId._id} className="cart-item">
-              <div className="cart-info">
+               <div className="cart-info">
                 <h2>{item.productId.name}</h2>
                 <p>{item.productId.description}</p>
               </div>
