@@ -22,7 +22,9 @@ app.use("/api/v1/auth",authRouter);
 app.use("/api/v1/products",productRouter)
 app.use("/api/v1/cart",cartRouter);
 app.use('/api/v1/image', imageRoutes);
-
+app.get("/",(req,res)=>{
+	res.send("Hello");
+})
 app.use(errorHandler);
 app.listen(process.env.PORT,()=>{
 	console.log("Server Started at ",process.env.PORT);
