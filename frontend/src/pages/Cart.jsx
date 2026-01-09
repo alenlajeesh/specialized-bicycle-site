@@ -9,10 +9,10 @@ function Cart() {
 
   const token = localStorage.getItem("token");
 
-  
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const fetchCart = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/v1/cart", {
+      const res = await fetch(`${BASE_URL}/api/v1/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +49,7 @@ function Cart() {
     if (quantity < 1) return;
 
     try {
-      await fetch("http://localhost:3000/api/v1/cart/update", {
+      await fetch(`${BASE_URL}/api/v1/cart/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function Cart() {
    */
   const removeItem = async (productId) => {
     try {
-      await fetch(`http://localhost:3000/api/v1/cart/${productId}`, {
+      await fetch(`${BASE_URL}/api/v1/cart/${productId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

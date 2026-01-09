@@ -8,11 +8,11 @@ function Bikes() {
   const [user, setUser] = useState(null);
 
   const token = localStorage.getItem("token");
-
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   useEffect(() => {
     const fetchBikes = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/products", {
+        const res = await fetch(`${BASE_URL}/api/v1/products`, {
           headers: token
             ? { Authorization: `Bearer ${token}` }
             : undefined,
@@ -53,7 +53,7 @@ function Bikes() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/cart/add", {
+      const res = await fetch(`${BASE_URL}/api/v1/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ function Bikes() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/api/v1/products/${productId}`,
+        `${BASE_URL}/api/v1/products/${productId}`,
         {
           method: "DELETE",
           headers: {

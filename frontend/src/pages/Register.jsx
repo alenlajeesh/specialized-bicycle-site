@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/auth.css";
 
 function Register() {
+	const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -30,7 +31,7 @@ function Register() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/auth/register", {
+      const res = await fetch(`${BASE_URL}/api/v1/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

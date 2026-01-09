@@ -6,7 +6,7 @@ function Login() {
     email: "",
     password: "",
   });
-
+	const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ function Login() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/auth/login", {
+      const res = await fetch(`${BASE_URL}/api/v1/auth/logi`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
