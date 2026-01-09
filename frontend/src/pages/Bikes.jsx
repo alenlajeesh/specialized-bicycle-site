@@ -17,6 +17,7 @@ function Bikes() {
             ? { Authorization: `Bearer ${token}` }
             : undefined,
         });
+
         const data = await res.json();
 
         if (!res.ok) {
@@ -24,7 +25,7 @@ function Bikes() {
           return;
         }
 
-        setBikes(data.products); // backend returns { products: [...] }
+        setBikes(data.products);
       } catch {
         setError("Something went wrong");
       } finally {
@@ -36,7 +37,7 @@ function Bikes() {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        setUser(payload); // should contain role
+        setUser(payload);
       } catch (err) {
         console.log("Invalid token", err);
       }
@@ -64,7 +65,7 @@ function Bikes() {
       if (!res.ok) throw new Error("Failed to add to cart");
 
       alert("Added to cart 🛒");
-    } catch (err) {
+    } catch {
       alert("Error adding to cart");
     }
   };
@@ -73,16 +74,18 @@ function Bikes() {
     if (!window.confirm("Are you sure you want to delete this bike?")) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/v1/products/${productId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `http://localhost:3000/api/v1/products/${productId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to delete bike");
 
-      // refresh bikes list
       setBikes(bikes.filter((bike) => bike._id !== productId));
     } catch (err) {
       alert(err.message);
@@ -93,12 +96,23 @@ function Bikes() {
   if (error) return <p className="bikes-error">{error}</p>;
 
   return (
-    <div className="bikes-containers">
+    <div className="bikes-container">
       <h1>Available Bikes</h1>
 
-      <div className="bikes-grid">
+      <div className="products-grid">
         {bikes.map((bike) => (
-          <div key={bike._id} className="bike-card">
+          <div key={bike._id} className="product-card">
+            {/* ✅ BIKE IMAGE */}
+            <img
+              src={
+                bike.imageUrl
+                  ? `http://localhost:3000${bike.imageUrl}`
+                  : "/placeholder-bike.png"
+              }
+              alt={bike.name}
+              className="bike-image"
+            />
+
             <h2>{bike.name}</h2>
             <p className="bike-desc">{bike.description}</p>
 
@@ -114,7 +128,6 @@ function Bikes() {
               Add to Cart
             </button>
 
-            {/* Admin delete button */}
             {user?.role === "admin" && (
               <button
                 className="bike-delete"

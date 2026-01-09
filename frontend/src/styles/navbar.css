@@ -10,10 +10,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 40px;
+  height: 60px; /* fixed height */
+  padding: 0 40px; /* horizontal padding only */
   border-bottom: 1px solid #eee;
+  box-sizing: border-box; /* ensures padding doesn't add extra height */
 }
-
 .logo {
   font-weight: 900;
   font-size: 22px;
@@ -35,3 +36,9 @@
   color: black;
 }
 
+.nav-left a,
+.nav-right a {
+  line-height: 60px; /* vertically center text inside navbar */
+  text-decoration: none;
+  color: black;
+}

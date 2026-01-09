@@ -1,4 +1,4 @@
-/* Full-bleed bike grid (escapes parent padding) */
+/* FULL-BLEED GRID */
 .bike-grid {
   position: relative;
   left: 50%;
@@ -12,14 +12,14 @@
   gap: 16px;
 }
 
-/* Individual bike card */
+/* CARD */
 .bike-card {
   position: relative;
   height: 420px;
   overflow: hidden;
 }
 
-/* Bike image fills entire card */
+/* IMAGE */
 .bike-card img {
   width: 100%;
   height: 100%;
@@ -27,7 +27,7 @@
   display: block;
 }
 
-/* Dark gradient overlay */
+/* OVERLAY */
 .bike-overlay {
   position: absolute;
   inset: 0;
@@ -45,7 +45,7 @@
   justify-content: flex-end;
 }
 
-/* Title */
+/* TITLE */
 .bike-overlay h3 {
   color: #fff;
   font-size: 24px;
@@ -53,14 +53,14 @@
   margin-bottom: 4px;
 }
 
-/* Subtitle */
+/* SUBTITLE */
 .bike-overlay p {
   color: #ddd;
   font-size: 14px;
   line-height: 1.4;
 }
 
-/* Responsive: single column on small screens */
+/* MOBILE */
 @media (max-width: 768px) {
   .bike-grid {
     grid-template-columns: 1fr;

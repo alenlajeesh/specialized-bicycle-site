@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/dashboard.css";
 
 function Dashboard() {
-  const [user, setUser] = useState(null); // store user info from token
+  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
 
   // Product form state
@@ -15,10 +15,15 @@ function Dashboard() {
     category: "Bike",
     description: "",
     isActive: true,
+    imageUrl: "", // store uploaded image URL
   });
 
   const [productError, setProductError] = useState("");
   const [productSuccess, setProductSuccess] = useState("");
+
+  // Image file state
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,23 +33,16 @@ function Dashboard() {
     }
 
     try {
-      // Decode JWT payload
       const payload = JSON.parse(atob(token.split(".")[1]));
-      setUser(payload); // should include username and role
+      setUser(payload);
     } catch (err) {
       setError("Invalid token. Please login again.");
     }
   }, []);
 
-  if (error) {
-    return <p className="dashboard-error">{error}</p>;
-  }
+  if (error) return <p className="dashboard-error">{error}</p>;
+  if (!user) return <p>Loading...</p>;
 
-  if (!user) {
-    return <p>Loading...</p>;
-  }
-
-  // Handle product form input
   const handleProductChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProductData({
@@ -53,33 +51,73 @@ function Dashboard() {
     });
   };
 
-  // Handle product form submit
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // Upload image to backend and return URL
+  const uploadImage = async () => {
+    if (!selectedFile) return "";
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+
+    try {
+      const res = await fetch("http://localhost:3000/api/v1/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Upload failed");
+
+      setUploading(false);
+      return data.imageUrl; // <-- return image URL
+    } catch (err) {
+      setUploading(false);
+      setProductError("Image upload failed");
+      return "";
+    }
+  };
+
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     setProductError("");
     setProductSuccess("");
 
+    if (!selectedFile) {
+      setProductError("Please select an image before submitting");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
 
+      // 1️⃣ Upload image first
+      const imageUrl = await uploadImage();
+      if (!imageUrl) return;
+
+      // 2️⃣ Attach image URL to product
+      const productToSend = { ...productData, imageUrl };
+
+      // 3️⃣ Send product data to backend
       const res = await fetch("http://localhost:3000/api/v1/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(productToSend),
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setProductError(data.message || "Failed to add product");
         return;
       }
 
       setProductSuccess("Product added successfully!");
-      // Reset form
       setProductData({
         name: "",
         price: "",
@@ -89,7 +127,9 @@ function Dashboard() {
         category: "Bike",
         description: "",
         isActive: true,
+        imageUrl: "",
       });
+      setSelectedFile(null);
     } catch (err) {
       setProductError("Something went wrong. Try again.");
     }
@@ -115,7 +155,6 @@ function Dashboard() {
               onChange={handleProductChange}
               required
             />
-
             <input
               name="price"
               type="number"
@@ -124,7 +163,6 @@ function Dashboard() {
               onChange={handleProductChange}
               required
             />
-
             <input
               name="color"
               placeholder="Color"
@@ -132,7 +170,6 @@ function Dashboard() {
               onChange={handleProductChange}
               required
             />
-
             <input
               name="size"
               type="number"
@@ -141,7 +178,6 @@ function Dashboard() {
               onChange={handleProductChange}
               required
             />
-
             <input
               name="stock"
               type="number"
@@ -150,7 +186,6 @@ function Dashboard() {
               onChange={handleProductChange}
               required
             />
-
             <select
               name="category"
               value={productData.category}
@@ -160,7 +195,6 @@ function Dashboard() {
               <option value="Bike">Bike</option>
               <option value="Gear">Gear</option>
             </select>
-
             <textarea
               name="description"
               placeholder="Description"
@@ -179,7 +213,16 @@ function Dashboard() {
               />
             </label>
 
-            <button type="submit">Add Product</button>
+            {/* File input */}
+            <label>
+              Upload Image:
+              <input type="file" onChange={handleFileChange} />
+            </label>
+            {uploading && <p>Uploading image...</p>}
+
+            <button type="submit" disabled={uploading}>
+              Add Product
+            </button>
           </form>
         </div>
       ) : (
