@@ -5,11 +5,19 @@ function Hero() {
   return (
     <section className="hero">
       <div className="hero-text">
-        <p className="tagline">
-          ALL-NEW RED BULL – BORA – HANSGROHE KIT
+        <h1>S-Works Tarmac SL8</h1>
+
+        <h2>Dream Build: The Complete Package</h2>
+
+        <p>
+          Build your Tarmac SL8 Dream Bike with our exclusive complete packages
+          – available on selected S-Works Tarmac SL8 Framesets paired with
+          best-in-class components customized to your preferences. Contact your
+          preferred Specialized retailer and secure your Dream Build while
+          stocks last!
         </p>
-        <h1>Ride Like Remco</h1>
-        <button>Shop Now</button>
+
+        <button>Build Yours</button>
       </div>
 
       <div className="hero-image">
