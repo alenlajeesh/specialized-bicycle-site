@@ -1,42 +1,153 @@
-/* PAGE */
+/* =======================
+   PAGE LAYOUT
+======================= */
 .bikes-page {
-  padding: 40px;
-}
-
-.bikes-container {
+  padding: 40px 20px;
   max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
-  font-family: Arial, sans-serif;
+  margin: 0 auto;
 }
 
-/* GRID */
+.bikes-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+/* =======================
+   GRID (LEFT ALIGNED FIX)
+======================= */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  justify-content: start; /* 🔥 FIXES CENTER GAP ISSUE */
 }
 
-/* CARD — RENAMED */
+/* =======================
+   PRODUCT CARD
+======================= */
 .product-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 14px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
 }
 
-.bike-image {
+/* =======================
+   IMAGE (FULL FIT FIX)
+======================= */
+.image-wrapper {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 12px;
+  height: 170px;            /* controls image size */
+  border-radius: 12px;
+  overflow: hidden;         /* IMPORTANT */
   background-color: #f5f5f5;
+  margin-bottom: 14px;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* 🔥 IMAGE FILLS BOX */
+  display: block;
+}
+
+/* =======================
+   CARD CONTENT
+======================= */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-body h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 6px 0 4px;
+}
+
+.bike-desc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+/* =======================
+   PRICE & STOCK
+======================= */
+.bike-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stock {
+  font-size: 13px;
+  color: #1a8f2b;
+}
+
+/* =======================
+   BUTTONS
+======================= */
+.add-cart-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.2s ease;
+}
+
+.add-cart-btn:hover {
+  background: #222;
+}
+
+.add-cart-btn:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.bike-delete {
+  background: #cc2b2b;
+  color: #fff;
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.bike-delete:hover {
+  background: #a82020;
+}
+
+/* =======================
+   STATES
+======================= */
+.bikes-loading,
+.bikes-error {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 60px;
 }
 
