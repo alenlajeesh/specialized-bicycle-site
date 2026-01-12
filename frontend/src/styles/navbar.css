@@ -2,7 +2,7 @@
   background: black;
   color: white;
   font-size: 12px;
-  padding: 6px 12px;
+  padding: 6px 16px;
 
   display: flex;
   align-items: center;
@@ -26,14 +26,6 @@
 
   display: flex;
   align-items: center;
-}
-
-.top-bar-btn:hover,
-.top-bar-btn:focus,
-.top-bar-btn:active {
-  background: none;
-  outline: none;
-  box-shadow: none;
 }
 
 .top-bar-btn img {
@@ -62,19 +54,12 @@
 .top-bar-right a {
   color: white;
   text-decoration: none;
-  cursor: pointer;
 }
 
-.top-bar-right a:hover {
-  text-decoration: underline;
-}
-
-/* Divider */
 .divider {
   opacity: 0.6;
 }
 
-/* Location */
 .location {
   display: flex;
   align-items: center;
@@ -86,53 +71,44 @@
   height: 12px;
 }
 
+/* ============================= */
+/* Main Navbar */
+/* ============================= */
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px; /* fixed height */
-  padding: 0 40px; /* horizontal padding only */
+
+  height: 60px;
+  padding: 0 32px;
+  /* slightly tighter */
   border-bottom: 1px solid #eee;
-  box-sizing: border-box; /* ensures padding doesn't add extra height */
 }
-.logo {
-  font-weight: 900;
-  font-size: 22px;
-  letter-spacing: 2px;
-  text-decoration: none;
-  color: black;
+
+.logo img {
+  height: 20px;
+  /* closer to original */
+  display: block;
 }
 
 .nav-links a {
-  margin: 0 15px;
-      font-family: DINPro, "DINPro Fallback", Helvetica, sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      padding: 16px 0px;
+  margin: 0 14px;
+  font-family: DINPro, "DINPro Fallback", Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 0;
 
-      color: rgb(37, 37, 37);
-      cursor: pointer;
-      position: relative;
-      text-wrap: nowrap;
-      text-decoration: none;
-    
+  color: rgb(37, 37, 37);
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-icons a {
-  margin-left: 15px;
-  text-decoration: none;
-  color: black;
-}
-.nav-icons a img {
-  height: 18px;
-  /* change this */
-  width: auto;
-  /* keep aspect ratio */
+  margin-left: 14px;
 }
 
-.nav-left a,
-.nav-right a {
-  line-height: 60px; /* vertically center text inside navbar */
-  text-decoration: none;
-  color: black;
+.nav-icons img {
+  height: 18px;
+  width: auto;
 }

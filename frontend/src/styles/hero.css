@@ -1,11 +1,38 @@
+/* ============================= */
+/* Global Fixes */
+/* ============================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* ============================= */
+/* Hero Section */
+/* ============================= */
+
 .hero {
   position: relative;
   width: 100%;
   height: calc(100vh - 80px);
   overflow: hidden;
+
+  /* 🔥 KEY CHANGE */
+  display: flex;
+  align-items: center;
+  /* vertical center */
 }
 
-/* Full background image */
+/* ============================= */
+/* Background Image */
+/* ============================= */
+
 .hero-image {
   position: absolute;
   inset: 0;
@@ -16,68 +43,95 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-/* Dark overlay for readability */
+/* ============================= */
+/* Dark Overlay */
+/* ============================= */
+
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg,
-      rgba(0, 0, 0, 0.75) 0%,
-      rgba(0, 0, 0, 0.45) 35%,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.5) 35%,
       rgba(0, 0, 0, 0) 65%);
   z-index: 1;
 }
 
-/* Text on top of image */
+/* ============================= */
+/* Hero Text (LEFT + CENTERED) */
+/* ============================= */
+
 .hero-text {
   position: relative;
   z-index: 2;
   color: white;
-  max-width: 520px;
-  padding: 120px 80px;
+
+  /* Wider for heading */
+  max-width: 640px;
+
+  /* LEFT alignment spacing only */
+  padding-left: clamp(16px, 5vw, 80px);
 }
 
-/* Small headline (tagline) */
-.hero-text .tagline {
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  margin-bottom: 16px;
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0.95;
-}
+/* ============================= */
+/* Headings */
+/* ============================= */
 
-/* Main headline */
 .hero-text h1 {
-  font-size: 56px;
+  font-size: 52px;
   font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 18px;
-  letter-spacing: -0.5px;
+  line-height: 1.02;
+  margin-bottom: 10px;
+  letter-spacing: -0.8px;
+
+  white-space: nowrap;
+  /* stay on one line */
 }
 
-/* Supporting paragraph (if present later) */
+.hero-text h2 {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+/* ============================= */
+/* Paragraph */
+/* ============================= */
+
 .hero-text p {
   font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 28px;
-  opacity: 0.95;
+  line-height: 1.45;
+  margin-bottom: 20px;
+  opacity: 0.9;
+
+  max-width: 460px;
 }
 
+/* ============================= */
 /* Button */
+/* ============================= */
+
 .hero-text button {
   background: white;
   color: black;
   border: none;
-  padding: 14px 28px;
-  font-size: 14px;
+
+  padding: 12px 24px;
+  font-size: 13px;
   font-weight: 600;
+  border-radius: 2px;
+
   cursor: pointer;
+  transition: background 0.2s ease;
+
+  margin-top: 4px;
 }
 
-/* Remove default blue hover/focus */
 .hero-text button:hover,
 .hero-text button:focus,
 .hero-text button:active {
