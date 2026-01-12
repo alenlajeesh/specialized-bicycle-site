@@ -43,7 +43,7 @@ function Navbar() {
         <nav className="nav-links">
           <Link to="/bikes">Bikes</Link>
 		<Link to="/gear">Gear</Link>
-          <a href="#">Sale</a>
+          <Link to = "/sales">Sale</Link>
         </nav>
 
         <div className="nav-icons">

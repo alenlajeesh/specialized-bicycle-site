@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "../styles/bikes.css";
+import img1 from "../assets/bikeShopImages/img1.webp";
+import img2 from "../assets/bikeShopImages/img2.webp";
+import img3 from "../assets/bikeShopImages/img3.webp";
+import img4 from "../assets/bikeShopImages/img4.webp";
+import img5 from "../assets/bikeShopImages/img5.webp";
+import img6 from "../assets/bikeShopImages/img6.webp";
+import img7 from "../assets/bikeShopImages/img7.webp";
+
 
 function Bikes() {
   const [bikes, setBikes] = useState([]);
@@ -9,6 +17,8 @@ function Bikes() {
 
   const token = localStorage.getItem("token");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const categoryRef = useRef(null);
 
   useEffect(() => {
     const fetchBikes = async () => {
@@ -46,47 +56,37 @@ function Bikes() {
     fetchBikes();
   }, [token, BASE_URL]);
 
-  const addToCart = async (productId) => {
-    if (!token) {
-      alert("Please login to add items to cart");
-      return;
-    }
+  /* ================= CATEGORY SCROLL ================= */
 
-    try {
-      const res = await fetch(`${BASE_URL}/api/v1/cart/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ productId, quantity: 1 }),
-      });
-
-      if (!res.ok) throw new Error();
-      alert("Added to cart 🛒");
-    } catch {
-      alert("Error adding to cart");
-    }
+  const scrollLeft = () => {
+    if (!categoryRef.current) return;
+    categoryRef.current.scrollBy({
+      left: -300,
+      behavior: "smooth",
+    });
   };
 
-  const deleteBike = async (productId) => {
-    if (!window.confirm("Delete this product?")) return;
-
-    try {
-      const res = await fetch(`${BASE_URL}/api/v1/products/${productId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) throw new Error();
-      setBikes((prev) => prev.filter((b) => b._id !== productId));
-    } catch {
-      alert("Delete failed");
-    }
+  const scrollRight = () => {
+    if (!categoryRef.current) return;
+    categoryRef.current.scrollBy({
+      left: 300,
+      behavior: "smooth",
+    });
   };
 
   if (loading) return <p className="bikes-loading">Loading bikes...</p>;
   if (error) return <p className="bikes-error">{error}</p>;
+
+  const categories = [
+    { name: "Electric Bikes", image: img1 },
+    { name: "Mountain Bikes", image: img2 },
+    { name: "Road Bikes", image: img3 },
+    { name: "Gravel Bikes", image: img4 },
+    { name: "City Bikes", image: img5 },
+    { name: "Kids Bikes", image: img6 },
+    {name: "Complete Your Ride With Accessories", image: img7},
+  ];
+  
 
   return (
     <div className="bikes-page">
@@ -95,48 +95,54 @@ function Bikes() {
         <h1 className="bikes-title">
           Bikes <span>({bikes.length})</span>
         </h1>
+      </div>
 
-        {/* Search + Sort (UI only for now) */}
-        <div className="bikes-actions">
-          <input
-            type="text"
-            className="bike-search"
-            placeholder="Search bikes"
-            disabled
-          />
+      {/* ================= CATEGORY BAR ================= */}
+      <div className="category-section">
+        <button className="category-scroll-btn left" onClick={scrollLeft}>
+          ←
+        </button>
 
-          <select className="bike-sort" disabled>
-            <option>Sort By</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
+        <div className="category-row" ref={categoryRef}>
+          {categories.map((cat) => (
+            <div key={cat.name} className="category-card">
+              <div className="category-image">
+                <img src={cat.image} alt={cat.name} />
+              </div>
+              <p>{cat.name}</p>
+            </div>
+          ))}
         </div>
+
+        <button className="category-scroll-btn right" onClick={scrollRight}>
+          →
+        </button>
       </div>
 
       {/* ================= CONTENT ================= */}
       <div className="bikes-content">
-        {/* Filters Sidebar (UI only) */}
+        {/* Filters Sidebar */}
         <aside className="bikes-filters">
           <h3>Category</h3>
           <label>
-            <input type="checkbox" disabled /> Mountain
+            <input type="checkbox"  /> Mountain
           </label>
           <label>
-            <input type="checkbox" disabled /> Road
+            <input type="checkbox"  /> Road
           </label>
           <label>
-            <input type="checkbox" disabled /> Gravel
+            <input type="checkbox"  /> Gravel
           </label>
           <label>
-            <input type="checkbox" disabled /> Electric
+            <input type="checkbox"  /> Electric
           </label>
 
           <h3>Price</h3>
           <label>
-            <input type="checkbox" disabled /> Under ₹50,000
+            <input type="checkbox"  /> Under ₹50,000
           </label>
           <label>
-            <input type="checkbox" disabled /> ₹50,000+
+            <input type="checkbox"  /> ₹50,000+
           </label>
         </aside>
 
@@ -170,21 +176,12 @@ function Bikes() {
                 </span>
               </div>
 
-              <button
-                className="add-cart-btn"
-                onClick={() => addToCart(bike._id)}
-                disabled={bike.stock === 0}
-              >
+              <button className="add-cart-btn" disabled={bike.stock === 0}>
                 Add to Cart
               </button>
 
               {user?.role === "admin" && (
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteBike(bike._id)}
-                >
-                  Delete
-                </button>
+                <button className="delete-btn">Delete</button>
               )}
             </div>
           ))}

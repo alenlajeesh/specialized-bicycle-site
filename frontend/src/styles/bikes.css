@@ -1,4 +1,3 @@
-bikes.css
 /* ============================= */
 /* Page Wrapper */
 /* ============================= */
@@ -10,14 +9,14 @@ bikes.css
 }
 
 /* ============================= */
-/* Header (Title + Search + Sort) */
+/* Header */
 /* ============================= */
 
 .bikes-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .bikes-title {
@@ -32,24 +31,84 @@ bikes.css
   margin-left: 6px;
 }
 
-/* Actions */
-.bikes-actions {
-  display: flex;
-  gap: 12px;
+/* ============================= */
+/* Category Carousel */
+/* ============================= */
+
+.category-section {
+  position: relative;
+  margin-bottom: 40px;
 }
 
-.bike-search,
-.bike-sort {
-  padding: 10px 12px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+/* Scroll row */
+
+.category-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0;
+}
+
+.category-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Category Card */
+
+.category-card {
+  min-width: 260px;
   background: #fff;
-  min-width: 180px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.category-image {
+  height: 180px;
+  background: #eaeaea;
+  /* placeholder image */
+  border-radius: 14px 14px 0 0;
+}
+
+.category-card p {
+  padding: 14px 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* Scroll Buttons */
+
+.category-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.category-scroll-btn.left {
+  left: -12px;
+}
+
+.category-scroll-btn.right {
+  right: -12px;
+}
+
+.category-scroll-btn:hover {
+  background: #f5f5f5;
 }
 
 /* ============================= */
-/* Main Layout */
+/* Main Content Layout */
 /* ============================= */
 
 .bikes-content {
@@ -87,7 +146,6 @@ bikes.css
   margin-bottom: 10px;
   color: #444;
   cursor: not-allowed;
-  /* UI only for now */
 }
 
 /* ============================= */
@@ -120,9 +178,7 @@ bikes.css
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
 }
 
-/* ============================= */
 /* Image */
-/* ============================= */
 
 .image-wrapper {
   width: 100%;
@@ -139,9 +195,7 @@ bikes.css
   object-fit: cover;
 }
 
-/* ============================= */
 /* Text */
-/* ============================= */
 
 .bike-name {
   font-size: 18px;
@@ -155,9 +209,7 @@ bikes.css
   margin-bottom: 12px;
 }
 
-/* ============================= */
 /* Details */
-/* ============================= */
 
 .bike-details {
   display: flex;
@@ -167,9 +219,7 @@ bikes.css
   margin-bottom: 12px;
 }
 
-/* ============================= */
 /* Price & Stock */
-/* ============================= */
 
 .bike-meta {
   display: flex;
@@ -193,9 +243,7 @@ bikes.css
   color: #b42318;
 }
 
-/* ============================= */
 /* Buttons */
-/* ============================= */
 
 .add-cart-btn {
   background: #000;
@@ -236,7 +284,7 @@ bikes.css
 }
 
 /* ============================= */
-/* Responsive (Tablet & Down) */
+/* Responsive */
 /* ============================= */
 
 @media (max-width: 1024px) {
@@ -246,6 +294,14 @@ bikes.css
 
   .bikes-filters {
     display: none;
-    /* later replace with mobile filter drawer */
   }
+
+  .category-scroll-btn {
+    display: none;
+  }
+}
+.category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
