@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import "../styles/bikes.css"; // reuse the same CSS
+import "../styles/bikes.css";
 
-function Gear() {
-  const [gear, setGear] = useState([]);
+function Bikes() {
+  const [bikes, setBikes] = useState([]); // still named bikes (OK for now)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
@@ -11,27 +11,25 @@ function Gear() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    const fetchGear = async () => {
+    const fetchBikes = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/v1/products`, {
-          headers: token
-            ? { Authorization: `Bearer ${token}` }
-            : undefined,
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.message || "Failed to fetch gear");
+          setError(data.message || "Failed to fetch products");
           return;
         }
 
-        // Only keep products with category "gear"
+        // ✅ ONLY keep products with category "gear"
         const gearProducts = (data.products || []).filter(
-          (p) => p.category.toLowerCase() === "gear"
+          (p) => p.category?.toLowerCase() === "gear"
         );
 
-        setGear(gearProducts);
+        setBikes(gearProducts);
       } catch {
         setError("Something went wrong");
       } finally {
@@ -46,7 +44,7 @@ function Gear() {
       } catch {}
     }
 
-    fetchGear();
+    fetchBikes();
   }, [token, BASE_URL]);
 
   const addToCart = async (productId) => {
@@ -72,7 +70,7 @@ function Gear() {
     }
   };
 
-  const deleteGear = async (productId) => {
+  const deleteBike = async (productId) => {
     if (!window.confirm("Delete this product?")) return;
 
     try {
@@ -82,61 +80,116 @@ function Gear() {
       });
 
       if (!res.ok) throw new Error();
-      setGear((prev) => prev.filter((g) => g._id !== productId));
+      setBikes((prev) => prev.filter((b) => b._id !== productId));
     } catch {
       alert("Delete failed");
     }
   };
 
-  if (loading) return <p className="bikes-loading">Loading gear...</p>;
+  if (loading) return <p className="bikes-loading">Loading products...</p>;
   if (error) return <p className="bikes-error">{error}</p>;
 
   return (
     <div className="bikes-page">
-      <h1 className="bikes-title">Gear</h1>
+      {/* ================= HEADER ================= */}
+      <div className="bikes-header">
+        <h1 className="bikes-title">
+          Gears <span>({bikes.length})</span>
+        </h1>
 
-      <div className="products-grid">
-        {gear.map((item) => (
-          <div key={item._id} className="product-card">
-            <div className="image-wrapper">
-              <img src={`${BASE_URL}${item.imageUrl}`} alt={item.name} />
-            </div>
+        {/* Search + Sort (UI only for now) */}
+        <div className="bikes-actions">
+          <input
+            type="text"
+            className="bike-search"
+            placeholder="Search gear"
+            disabled
+          />
 
-            <h2 className="bike-name">{item.name}</h2>
-            <p className="bike-desc"></p>
+          <select className="bike-sort" disabled>
+            <option>Sort By</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
 
-            <div className="bike-details">
-              <span><strong>Color:</strong> {item.color || "—"}</span><br/>
-              <span><strong>Size:</strong> {item.size || "—"}</span><br/>
-              <span><strong>Category:</strong> {item.category}</span><br/>
-            </div>
+      {/* ================= CONTENT ================= */}
+      <div className="bikes-content">
+        {/* Filters Sidebar (UI only) */}
+        <aside className="bikes-filters">
+          <h3>Category</h3>
+          <label>
+            <input type="checkbox" disabled /> Apparel
+          </label>
+          <label>
+            <input type="checkbox" disabled /> Accessories
+          </label>
+          <label>
+            <input type="checkbox" disabled /> Components
+          </label>
 
-            <div className="bike-meta">
-              <span className="price">₹{item.price}</span>
-              <span className={item.stock > 0 ? "in-stock" : "out-stock"}>
-                {item.stock > 0 ? `In Stock (${item.stock})` : "Out of Stock"}
-              </span>
-            </div>
+          <h3>Price</h3>
+          <label>
+            <input type="checkbox" disabled /> Under ₹50,000
+          </label>
+          <label>
+            <input type="checkbox" disabled /> ₹50,000+
+          </label>
+        </aside>
 
-            <button
-              className="add-cart-btn"
-              onClick={() => addToCart(item._id)}
-              disabled={item.stock === 0}
-            >
-              Add to Cart
-            </button>
+        {/* Products Grid */}
+        <div className="products-grid">
+          {bikes.map((bike) => (
+            <div key={bike._id} className="product-card">
+              <div className="image-wrapper">
+                <img src={`${BASE_URL}${bike.imageUrl}`} alt={bike.name} />
+              </div>
 
-            {user?.role === "admin" && (
-              <button className="delete-btn" onClick={() => deleteGear(item._id)}>
-                Delete
+              <h2 className="bike-name">{bike.name}</h2>
+              <p className="bike-desc">{bike.description}</p>
+
+              <div className="bike-details">
+                <span>
+                  <strong>Color:</strong> {bike.color || "—"}
+                </span>
+                <span>
+                  <strong>Size:</strong> {bike.size || "—"}
+                </span>
+                <span>
+                  <strong>Category:</strong> {bike.category}
+                </span>
+              </div>
+
+              <div className="bike-meta">
+                <span className="price">₹{bike.price}</span>
+                <span className={bike.stock > 0 ? "in-stock" : "out-stock"}>
+                  {bike.stock > 0 ? `In Stock (${bike.stock})` : "Out of Stock"}
+                </span>
+              </div>
+
+              <button
+                className="add-cart-btn"
+                onClick={() => addToCart(bike._id)}
+                disabled={bike.stock === 0}
+              >
+                Add to Cart
               </button>
-            )}
-          </div>
-        ))}
+
+              {user?.role === "admin" && (
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteBike(bike._id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-export default Gear;
-
+export default Bikes;

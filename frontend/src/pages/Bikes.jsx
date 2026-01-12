@@ -14,9 +14,7 @@ function Bikes() {
     const fetchBikes = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/v1/products`, {
-          headers: token
-            ? { Authorization: `Bearer ${token}` }
-            : undefined,
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
 
         const data = await res.json();
@@ -26,7 +24,6 @@ function Bikes() {
           return;
         }
 
-        // Only keep products with category "bike"
         const bikeProducts = (data.products || []).filter(
           (p) => p.category.toLowerCase() === "bike"
         );
@@ -93,50 +90,108 @@ function Bikes() {
 
   return (
     <div className="bikes-page">
-      <h1 className="bikes-title">Bikes</h1>
+      {/* ================= HEADER ================= */}
+      <div className="bikes-header">
+        <h1 className="bikes-title">
+          Bikes <span>({bikes.length})</span>
+        </h1>
 
-      <div className="products-grid">
-        {bikes.map((bike) => (
-          <div key={bike._id} className="product-card">
-            <div className="image-wrapper">
-              <img src={`${BASE_URL}${bike.imageUrl}`} alt={bike.name} />
-            </div>
+        {/* Search + Sort (UI only for now) */}
+        <div className="bikes-actions">
+          <input
+            type="text"
+            className="bike-search"
+            placeholder="Search bikes"
+            disabled
+          />
 
-            <h2 className="bike-name">{bike.name}</h2>
-            <p className="bike-desc"></p>
+          <select className="bike-sort" disabled>
+            <option>Sort By</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
 
-            <div className="bike-details">
-              <span><strong>Color:</strong> {bike.color || "—"}</span><br/>
-              <span><strong>Size:</strong> {bike.size || "—"}</span><br/>
-              <span><strong>Category:</strong> {bike.category}</span><br/>
-            </div>
+      {/* ================= CONTENT ================= */}
+      <div className="bikes-content">
+        {/* Filters Sidebar (UI only) */}
+        <aside className="bikes-filters">
+          <h3>Category</h3>
+          <label>
+            <input type="checkbox" disabled /> Mountain
+          </label>
+          <label>
+            <input type="checkbox" disabled /> Road
+          </label>
+          <label>
+            <input type="checkbox" disabled /> Gravel
+          </label>
+          <label>
+            <input type="checkbox" disabled /> Electric
+          </label>
 
-            <div className="bike-meta">
-              <span className="price">₹{bike.price}</span>
-              <span className={bike.stock > 0 ? "in-stock" : "out-stock"}>
-                {bike.stock > 0 ? `In Stock (${bike.stock})` : "Out of Stock"}
-              </span>
-            </div>
+          <h3>Price</h3>
+          <label>
+            <input type="checkbox" disabled /> Under ₹50,000
+          </label>
+          <label>
+            <input type="checkbox" disabled /> ₹50,000+
+          </label>
+        </aside>
 
-            <button
-              className="add-cart-btn"
-              onClick={() => addToCart(bike._id)}
-              disabled={bike.stock === 0}
-            >
-              Add to Cart
-            </button>
+        {/* Products Grid */}
+        <div className="products-grid">
+          {bikes.map((bike) => (
+            <div key={bike._id} className="product-card">
+              <div className="image-wrapper">
+                <img src={`${BASE_URL}${bike.imageUrl}`} alt={bike.name} />
+              </div>
 
-            {user?.role === "admin" && (
-              <button className="delete-btn" onClick={() => deleteBike(bike._id)}>
-                Delete
+              <h2 className="bike-name">{bike.name}</h2>
+              <p className="bike-desc">{bike.description}</p>
+
+              <div className="bike-details">
+                <span>
+                  <strong>Color:</strong> {bike.color || "—"}
+                </span>
+                <span>
+                  <strong>Size:</strong> {bike.size || "—"}
+                </span>
+                <span>
+                  <strong>Category:</strong> {bike.category}
+                </span>
+              </div>
+
+              <div className="bike-meta">
+                <span className="price">₹{bike.price}</span>
+                <span className={bike.stock > 0 ? "in-stock" : "out-stock"}>
+                  {bike.stock > 0 ? `In Stock (${bike.stock})` : "Out of Stock"}
+                </span>
+              </div>
+
+              <button
+                className="add-cart-btn"
+                onClick={() => addToCart(bike._id)}
+                disabled={bike.stock === 0}
+              >
+                Add to Cart
               </button>
-            )}
-          </div>
-        ))}
+
+              {user?.role === "admin" && (
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteBike(bike._id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
 export default Bikes;
-
