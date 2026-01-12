@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/dashboard.css";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate();
+
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   // Product form state
   const [productData, setProductData] = useState({
     name: "",
@@ -15,13 +19,12 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     category: "Bike",
     description: "",
     isActive: true,
-    imageUrl: "", // store uploaded image URL
+    imageUrl: "",
   });
 
   const [productError, setProductError] = useState("");
   const [productSuccess, setProductSuccess] = useState("");
 
-  // Image file state
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -29,6 +32,8 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const token = localStorage.getItem("token");
     if (!token) {
       setError("You are not logged in!");
+	 navigate("/login");
+
       return;
     }
 
@@ -39,6 +44,12 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
       setError("Invalid token. Please login again.");
     }
   }, []);
+
+  // 🔴 LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   if (error) return <p className="dashboard-error">{error}</p>;
   if (!user) return <p>Loading...</p>;
@@ -55,7 +66,6 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     setSelectedFile(e.target.files[0]);
   };
 
-  // Upload image to backend and return URL
   const uploadImage = async () => {
     if (!selectedFile) return "";
 
@@ -73,7 +83,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
       if (!res.ok) throw new Error(data.message || "Upload failed");
 
       setUploading(false);
-      return data.imageUrl; // <-- return image URL
+      return data.imageUrl;
     } catch (err) {
       setUploading(false);
       setProductError("Image upload failed");
@@ -94,14 +104,11 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     try {
       const token = localStorage.getItem("token");
 
-      // 1️⃣ Upload image first
       const imageUrl = await uploadImage();
       if (!imageUrl) return;
 
-      // 2️⃣ Attach image URL to product
       const productToSend = { ...productData, imageUrl };
 
-      // 3️⃣ Send product data to backend
       const res = await fetch(`${BASE_URL}/api/v1/products`, {
         method: "POST",
         headers: {
@@ -137,6 +144,11 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   return (
     <div className="dashboard-container">
+      {/* 🔴 LOGOUT BUTTON (VISIBLE TO ALL USERS) */}
+      <button className="logout-btn" onClick={handleLogout}>
+        Sign Out
+      </button>
+
       <h1>Welcome, {user.username}!</h1>
       <p>Your role: {user.role}</p>
 
@@ -145,7 +157,9 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
           <h2>Admin Panel - Add Product</h2>
 
           {productError && <p className="product-error">{productError}</p>}
-          {productSuccess && <p className="product-success">{productSuccess}</p>}
+          {productSuccess && (
+            <p className="product-success">{productSuccess}</p>
+          )}
 
           <form className="product-form" onSubmit={handleProductSubmit}>
             <input
@@ -186,6 +200,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
               onChange={handleProductChange}
               required
             />
+
             <select
               name="category"
               value={productData.category}
@@ -195,13 +210,14 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
               <option value="Bike">Bike</option>
               <option value="Gear">Gear</option>
             </select>
+
             <textarea
               name="description"
               placeholder="Description"
               value={productData.description}
               onChange={handleProductChange}
               required
-            ></textarea>
+            />
 
             <label>
               Active:
@@ -213,11 +229,11 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
               />
             </label>
 
-            {/* File input */}
             <label>
               Upload Image:
               <input type="file" onChange={handleFileChange} />
             </label>
+
             {uploading && <p>Uploading image...</p>}
 
             <button type="submit" disabled={uploading}>
