@@ -103,12 +103,12 @@ function Bikes() {
             </div>
 
             <h2 className="bike-name">{bike.name}</h2>
-            <p className="bike-desc">{bike.description}</p>
+            <p className="bike-desc"></p>
 
             <div className="bike-details">
-              <span><strong>Color:</strong> {bike.color || "—"}</span>
-              <span><strong>Size:</strong> {bike.size || "—"}</span>
-              <span><strong>Category:</strong> {bike.category}</span>
+              <span><strong>Color:</strong> {bike.color || "—"}</span><br/>
+              <span><strong>Size:</strong> {bike.size || "—"}</span><br/>
+              <span><strong>Category:</strong> {bike.category}</span><br/>
             </div>
 
             <div className="bike-meta">
