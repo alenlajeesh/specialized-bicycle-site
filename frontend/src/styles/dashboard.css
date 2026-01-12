@@ -1,110 +1,260 @@
+/* ============================= */
+/* Base Layout */
+/* ============================= */
+
 .dashboard-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f7f7f7;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  position: relative;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .dashboard-container h1 {
-  text-align: center;
-  color: #333;
+  margin-bottom: 4px;
 }
 
 .dashboard-container p {
-  text-align: center;
   color: #555;
 }
 
-.admin-section, .user-section {
-  margin-top: 30px;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  text-align: center;
-}
+/* ============================= */
+/* Logout Button */
+/* ============================= */
 
-.admin-section h2 {
-  color: #c0392b;
-}
-
-.user-section h2 {
-  color: #2980b9;
-}
-
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #3498db;
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  background: #000;
   color: #fff;
-  border-radius: 5px;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #2980b9;
+.logout-btn:hover {
+  background: #222;
 }
 
+/* ============================= */
+/* Error */
+/* ============================= */
+
 .dashboard-error {
-  color: red;
+  padding: 80px;
   text-align: center;
-  margin-top: 50px;
-  font-weight: bold;
+  font-size: 18px;
+  color: red;
 }
-.product-form {
+
+/* ============================= */
+/* Admin Products Strip */
+/* ============================= */
+
+.admin-products-strip {
+  margin: 32px 0;
+}
+
+.admin-products-strip h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* Horizontal row */
+
+.admin-products-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.admin-products-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.admin-products-row::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+/* ============================= */
+/* Admin Product Card */
+/* ============================= */
+
+.admin-product-card {
+  min-width: 220px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  /* 🔥 important for image clipping */
+  flex-shrink: 0;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
 }
+
+/* ============================= */
+/* Product Image */
+/* ============================= */
+
+.admin-product-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+
+/* ============================= */
+/* Product Info */
+/* ============================= */
+
+.card-info {
+  padding: 12px;
+}
+
+.card-info strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.card-info span {
+  font-size: 14px;
+  color: #444;
+}
+
+/* ============================= */
+/* Card Actions */
+/* ============================= */
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+.card-actions button {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Edit */
+
+.card-actions button:first-child {
+  background: #000;
+  color: #fff;
+}
+
+.card-actions button:first-child:hover {
+  background: #222;
+}
+
+/* Delete */
+
+.card-actions button:last-child {
+  background: #f2f2f2;
+  color: #000;
+}
+
+.card-actions button:last-child:hover {
+  background: #e5e5e5;
+}
+
+/* ============================= */
+/* Muted text */
+/* ============================= */
+
+.muted {
+  font-size: 14px;
+  color: #888;
+}
+
+/* ============================= */
+/* Product Form */
+/* ============================= */
+
+.product-form {
+  max-width: 520px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.product-form h2 {
+  margin-bottom: 16px;
+}
+
+/* Inputs */
 
 .product-form input,
 .product-form select,
 .product-form textarea {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
   font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
 .product-form textarea {
+  min-height: 80px;
   resize: vertical;
-  min-height: 60px;
 }
 
-.product-form label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* Submit button */
 
 .product-form button {
-  padding: 10px;
-  background-color: #27ae60;
+  background: #000;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .product-form button:hover {
-  background-color: #219150;
+  background: #222;
 }
+
+/* ============================= */
+/* Success / Error */
+/* ============================= */
 
 .product-error {
   color: red;
-  font-weight: bold;
-  margin-top: 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
 }
 
 .product-success {
   color: green;
-  font-weight: bold;
-  margin-top: 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
 }
 
+/* ============================= */
+/* User Dashboard */
+/* ============================= */
 
+.user-section {
+  margin-top: 32px;
+  background: #fafafa;
+  padding: 24px;
+  border-radius: 12px;
+}

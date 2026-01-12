@@ -9,7 +9,12 @@ function Dashboard() {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Product form state
+  /* ================= ADMIN STATE ================= */
+  const [activeTab, setActiveTab] = useState("create"); // create | edit
+  const [adminProducts, setAdminProducts] = useState([]);
+  const [editingProductId, setEditingProductId] = useState(null);
+
+  /* ================= PRODUCT FORM ================= */
   const [productData, setProductData] = useState({
     name: "",
     price: "",
@@ -22,39 +27,37 @@ function Dashboard() {
     imageUrl: "",
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [productError, setProductError] = useState("");
   const [productSuccess, setProductSuccess] = useState("");
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-
+  /* ================= AUTH ================= */
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      setError("You are not logged in!");
-	 navigate("/login");
-
-      return;
-    }
+    if (!token) return navigate("/login");
 
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setUser(payload);
-    } catch (err) {
-      setError("Invalid token. Please login again.");
+
+      // 🔴 BACKEND HOOK (later)
+      // fetch(`${BASE_URL}/api/v1/products?createdBy=${payload.id}`)
+      //   .then(res => res.json())
+      //   .then(data => setAdminProducts(data.products))
+    } catch {
+      setError("Invalid token");
     }
   }, []);
 
-  // 🔴 LOGOUT FUNCTION
+  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
-  if (error) return <p className="dashboard-error">{error}</p>;
-  if (!user) return <p>Loading...</p>;
-
-  const handleProductChange = (e) => {
+  /* ================= FORM HANDLERS ================= */
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProductData({
       ...productData,
@@ -66,6 +69,7 @@ function Dashboard() {
     setSelectedFile(e.target.files[0]);
   };
 
+  /* ================= IMAGE UPLOAD ================= */
   const uploadImage = async () => {
     if (!selectedFile) return "";
 
@@ -80,51 +84,51 @@ function Dashboard() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Upload failed");
+      if (!res.ok) throw new Error();
 
       setUploading(false);
       return data.imageUrl;
-    } catch (err) {
+    } catch {
       setUploading(false);
       setProductError("Image upload failed");
       return "";
     }
   };
 
-  const handleProductSubmit = async (e) => {
+  /* ================= CREATE / UPDATE ================= */
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setProductError("");
     setProductSuccess("");
 
-    if (!selectedFile) {
-      setProductError("Please select an image before submitting");
-      return;
-    }
-
     try {
-      const token = localStorage.getItem("token");
+      let imageUrl = productData.imageUrl;
 
-      const imageUrl = await uploadImage();
-      if (!imageUrl) return;
-
-      const productToSend = { ...productData, imageUrl };
-
-      const res = await fetch(`${BASE_URL}/api/v1/products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(productToSend),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setProductError(data.message || "Failed to add product");
-        return;
+      // Upload image ONLY if new file selected
+      if (selectedFile) {
+        imageUrl = await uploadImage();
+        if (!imageUrl) return;
       }
 
-      setProductSuccess("Product added successfully!");
+      const payload = { ...productData, imageUrl };
+
+      if (activeTab === "create") {
+        // 🔴 BACKEND HOOK: POST /products
+        setAdminProducts((prev) => [...prev, { ...payload, _id: Date.now() }]);
+        setProductSuccess("Product created (UI only)");
+      } else {
+        // 🔴 BACKEND HOOK: PUT /products/:id
+        setAdminProducts((prev) =>
+          prev.map((p) =>
+            p._id === editingProductId ? { ...payload, _id: p._id } : p
+          )
+        );
+        setProductSuccess("Product updated (UI only)");
+      }
+
+      setActiveTab("create");
+      setEditingProductId(null);
+      setSelectedFile(null);
       setProductData({
         name: "",
         price: "",
@@ -136,37 +140,56 @@ function Dashboard() {
         isActive: true,
         imageUrl: "",
       });
-      setSelectedFile(null);
-    } catch (err) {
-      setProductError("Something went wrong. Try again.");
+    } catch {
+      setProductError("Something went wrong");
     }
   };
 
+  /* ================= EDIT ================= */
+  const handleEdit = (product) => {
+    setProductData(product);
+    setEditingProductId(product._id);
+    setActiveTab("edit");
+  };
+
+  /* ================= DELETE ================= */
+  const handleDelete = (id) => {
+    if (!window.confirm("Delete this product?")) return;
+
+    // 🔴 BACKEND HOOK: DELETE /products/:id
+    setAdminProducts((prev) => prev.filter((p) => p._id !== id));
+  };
+
+  if (error) return <p className="dashboard-error">{error}</p>;
+  if (!user) return <p>Loading...</p>;
+
   return (
     <div className="dashboard-container">
-      {/* 🔴 LOGOUT BUTTON (VISIBLE TO ALL USERS) */}
       <button className="logout-btn" onClick={handleLogout}>
         Sign Out
       </button>
 
-      <h1>Welcome, {user.username}!</h1>
-      <p>Your role: {user.role}</p>
+      <h1>Welcome, {user.username}</h1>
+      <p>Role: {user.role}</p>
 
-      {user.role === "admin" ? (
-        <div className="admin-section">
-          <h2>Admin Panel - Add Product</h2>
+      {user.role === "admin" && (
+        <>
+          {/* ================= PRODUCT FORM (TOP) ================= */}
+          <form className="product-form" onSubmit={handleSubmit}>
+            <h2>
+              {activeTab === "create" ? "Create Product" : "Edit Product"}
+            </h2>
 
-          {productError && <p className="product-error">{productError}</p>}
-          {productSuccess && (
-            <p className="product-success">{productSuccess}</p>
-          )}
+            {productError && <p className="product-error">{productError}</p>}
+            {productSuccess && (
+              <p className="product-success">{productSuccess}</p>
+            )}
 
-          <form className="product-form" onSubmit={handleProductSubmit}>
             <input
               name="name"
-              placeholder="Product Name"
+              placeholder="Name"
               value={productData.name}
-              onChange={handleProductChange}
+              onChange={handleChange}
               required
             />
             <input
@@ -174,38 +197,36 @@ function Dashboard() {
               type="number"
               placeholder="Price"
               value={productData.price}
-              onChange={handleProductChange}
+              onChange={handleChange}
               required
             />
             <input
               name="color"
               placeholder="Color"
               value={productData.color}
-              onChange={handleProductChange}
+              onChange={handleChange}
               required
             />
             <input
               name="size"
-              type="number"
               placeholder="Size"
               value={productData.size}
-              onChange={handleProductChange}
+              onChange={handleChange}
               required
             />
             <input
               name="stock"
               type="number"
-              placeholder="Stock Quantity"
+              placeholder="Stock"
               value={productData.stock}
-              onChange={handleProductChange}
+              onChange={handleChange}
               required
             />
 
             <select
               name="category"
               value={productData.category}
-              onChange={handleProductChange}
-              required
+              onChange={handleChange}
             >
               <option value="Bike">Bike</option>
               <option value="Gear">Gear</option>
@@ -215,41 +236,59 @@ function Dashboard() {
               name="description"
               placeholder="Description"
               value={productData.description}
-              onChange={handleProductChange}
-              required
+              onChange={handleChange}
             />
 
             <label>
-              Active:
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={productData.isActive}
-                onChange={handleProductChange}
-              />
-            </label>
-
-            <label>
-              Upload Image:
+              Upload Image
               <input type="file" onChange={handleFileChange} />
             </label>
 
             {uploading && <p>Uploading image...</p>}
 
             <button type="submit" disabled={uploading}>
-              Add Product
+              {activeTab === "create" ? "Add Product" : "Update Product"}
             </button>
           </form>
-        </div>
-      ) : (
-        <div className="user-section">
-          <h2>User Dashboard</h2>
-          <p>Browse products and enjoy your account.</p>
-        </div>
+
+          {/* ================= PRODUCTS STRIP (BOTTOM) ================= */}
+          <div className="admin-products-strip">
+            <h3>Your Products</h3>
+
+            <div className="admin-products-row">
+              {adminProducts.length === 0 && (
+                <p className="muted">No products yet</p>
+              )}
+
+              {adminProducts.map((p) => (
+                <div key={p._id} className="admin-product-card">
+                  <img
+                    src={
+                      p.imageUrl
+                        ? `${BASE_URL}${p.imageUrl}`
+                        : "https://via.placeholder.com/300x200?text=No+Image"
+                    }
+                    alt={p.name}
+                  />
+
+                  <div className="card-info">
+                    <strong>{p.name}</strong>
+                    <span>₹{p.price}</span>
+                  </div>
+
+                  <div className="card-actions">
+                    <button onClick={() => handleEdit(p)}>Edit</button>
+                    <button onClick={() => handleDelete(p._id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
+  
 }
 
 export default Dashboard;
-
