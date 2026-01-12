@@ -103,12 +103,12 @@ function Gear() {
             </div>
 
             <h2 className="bike-name">{item.name}</h2>
-            <p className="bike-desc">{item.description}</p>
+            <p className="bike-desc"></p>
 
             <div className="bike-details">
-              <span><strong>Color:</strong> {item.color || "—"}</span>
-              <span><strong>Size:</strong> {item.size || "—"}</span>
-              <span><strong>Category:</strong> {item.category}</span>
+              <span><strong>Color:</strong> {item.color || "—"}</span><br/>
+              <span><strong>Size:</strong> {item.size || "—"}</span><br/>
+              <span><strong>Category:</strong> {item.category}</span><br/>
             </div>
 
             <div className="bike-meta">

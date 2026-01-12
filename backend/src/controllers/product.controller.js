@@ -1,6 +1,7 @@
 const Product = require("../models/product.model.js");
 const ApiError = require("../utils/api.error.handle.js");
-
+const path = require("path");
+const fs = require("fs").promises;
 // GET all products
 exports.getAllproducts = async (req, res, next) => {
   try {
@@ -30,7 +31,6 @@ exports.getAProduct = async (req, res, next) => {
 // CREATE product ✅ FIXED
 exports.createProduct = async (req, res, next) => {
   try {
-    console.log("REQ BODY RECEIVED:", req.body); // 🔍 DEBUG (keep for now)
 
     const {
       name,
@@ -109,9 +109,20 @@ exports.deleteProduct = async (req, res, next) => {
       return next(new ApiError(404, "Product Not found"));
     }
 
+    // Delete the image file if it exists
+    if (product.imageUrl) {
+      const imagePath = path.join(__dirname, "../../assets", path.basename(product.imageUrl));
+        try {
+			await fs.access(imagePath);
+			await fs.unlink(imagePath);
+		}catch (err) {
+			console.error("Error accessing or deleting file:", imagePath, err.message);
+		}  
+
+	}
+
     res.json({ message: "Deleted Successfully" });
   } catch (err) {
     next(err);
   }
 };
-
