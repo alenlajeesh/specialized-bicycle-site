@@ -9,12 +9,10 @@ function Dashboard() {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  /* ================= ADMIN STATE ================= */
-  const [activeTab, setActiveTab] = useState("create"); // create | edit
+  /* ================= STATE ================= */
   const [adminProducts, setAdminProducts] = useState([]);
   const [editingProductId, setEditingProductId] = useState(null);
 
-  /* ================= PRODUCT FORM ================= */
   const [productData, setProductData] = useState({
     name: "",
     price: "",
@@ -32,21 +30,25 @@ function Dashboard() {
   const [productError, setProductError] = useState("");
   const [productSuccess, setProductSuccess] = useState("");
 
-  /* ================= AUTH ================= */
+  /* ================= AUTH + FETCH PRODUCTS ================= */
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return navigate("/login");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setUser(payload);
 
-      // 🔴 BACKEND HOOK (later)
-      // fetch(`${BASE_URL}/api/v1/products?createdBy=${payload.id}`)
-      //   .then(res => res.json())
-      //   .then(data => setAdminProducts(data.products))
+      fetch(`${BASE_URL}/api/v1/products`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setAdminProducts(data.products || []));
     } catch {
-      setError("Invalid token");
+      setError("Invalid token. Please login again.");
     }
   }, []);
 
@@ -71,7 +73,7 @@ function Dashboard() {
 
   /* ================= IMAGE UPLOAD ================= */
   const uploadImage = async () => {
-    if (!selectedFile) return "";
+    if (!selectedFile) return productData.imageUrl;
 
     setUploading(true);
     const formData = new FormData();
@@ -102,31 +104,39 @@ function Dashboard() {
     setProductSuccess("");
 
     try {
-      let imageUrl = productData.imageUrl;
-
-      // Upload image ONLY if new file selected
-      if (selectedFile) {
-        imageUrl = await uploadImage();
-        if (!imageUrl) return;
-      }
+      const token = localStorage.getItem("token");
+      let imageUrl = await uploadImage();
+      if (!imageUrl) return;
 
       const payload = { ...productData, imageUrl };
 
-      if (activeTab === "create") {
-        // 🔴 BACKEND HOOK: POST /products
-        setAdminProducts((prev) => [...prev, { ...payload, _id: Date.now() }]);
-        setProductSuccess("Product created (UI only)");
-      } else {
-        // 🔴 BACKEND HOOK: PUT /products/:id
+      const res = await fetch(
+        editingProductId
+          ? `${BASE_URL}/api/v1/products/${editingProductId}`
+          : `${BASE_URL}/api/v1/products`,
+        {
+          method: editingProductId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      if (editingProductId) {
         setAdminProducts((prev) =>
-          prev.map((p) =>
-            p._id === editingProductId ? { ...payload, _id: p._id } : p
-          )
+          prev.map((p) => (p._id === data._id ? data : p))
         );
-        setProductSuccess("Product updated (UI only)");
+        setProductSuccess("Product updated successfully");
+      } else {
+        setAdminProducts((prev) => [data, ...prev]);
+        setProductSuccess("Product created successfully");
       }
 
-      setActiveTab("create");
       setEditingProductId(null);
       setSelectedFile(null);
       setProductData({
@@ -140,8 +150,8 @@ function Dashboard() {
         isActive: true,
         imageUrl: "",
       });
-    } catch {
-      setProductError("Something went wrong");
+    } catch (err) {
+      setProductError(err.message || "Operation failed");
     }
   };
 
@@ -149,15 +159,26 @@ function Dashboard() {
   const handleEdit = (product) => {
     setProductData(product);
     setEditingProductId(product._id);
-    setActiveTab("edit");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   /* ================= DELETE ================= */
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Delete this product?")) return;
 
-    // 🔴 BACKEND HOOK: DELETE /products/:id
-    setAdminProducts((prev) => prev.filter((p) => p._id !== id));
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/api/v1/products/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Delete failed");
+
+      setAdminProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (err) {
+      alert(err.message || "Error deleting product");
+    }
   };
 
   if (error) return <p className="dashboard-error">{error}</p>;
@@ -174,11 +195,9 @@ function Dashboard() {
 
       {user.role === "admin" && (
         <>
-          {/* ================= PRODUCT FORM (TOP) ================= */}
+          {/* ================= PRODUCT FORM ================= */}
           <form className="product-form" onSubmit={handleSubmit}>
-            <h2>
-              {activeTab === "create" ? "Create Product" : "Edit Product"}
-            </h2>
+            <h2>{editingProductId ? "Edit Product" : "Create Product"}</h2>
 
             {productError && <p className="product-error">{productError}</p>}
             {productSuccess && (
@@ -247,29 +266,18 @@ function Dashboard() {
             {uploading && <p>Uploading image...</p>}
 
             <button type="submit" disabled={uploading}>
-              {activeTab === "create" ? "Add Product" : "Update Product"}
+              {editingProductId ? "Update Product" : "Add Product"}
             </button>
           </form>
 
-          {/* ================= PRODUCTS STRIP (BOTTOM) ================= */}
+          {/* ================= PRODUCTS STRIP ================= */}
           <div className="admin-products-strip">
             <h3>Your Products</h3>
 
             <div className="admin-products-row">
-              {adminProducts.length === 0 && (
-                <p className="muted">No products yet</p>
-              )}
-
               {adminProducts.map((p) => (
                 <div key={p._id} className="admin-product-card">
-                  <img
-                    src={
-                      p.imageUrl
-                        ? `${BASE_URL}${p.imageUrl}`
-                        : "https://via.placeholder.com/300x200?text=No+Image"
-                    }
-                    alt={p.name}
-                  />
+                  <img src={`${BASE_URL}${p.imageUrl}`} alt={p.name} />
 
                   <div className="card-info">
                     <strong>{p.name}</strong>
@@ -288,7 +296,6 @@ function Dashboard() {
       )}
     </div>
   );
-  
 }
 
 export default Dashboard;
