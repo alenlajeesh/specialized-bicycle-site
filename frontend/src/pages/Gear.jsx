@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import "../styles/bikes.css";
+import "../styles/bikes.css"; // reuse the same CSS
 
-function Bikes() {
-  const [bikes, setBikes] = useState([]);
+function Gear() {
+  const [gear, setGear] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
@@ -11,7 +11,7 @@ function Bikes() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    const fetchBikes = async () => {
+    const fetchGear = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/v1/products`, {
           headers: token
@@ -22,16 +22,16 @@ function Bikes() {
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.message || "Failed to fetch bikes");
+          setError(data.message || "Failed to fetch gear");
           return;
         }
 
-        // Only keep products with category "bike"
-        const bikeProducts = (data.products || []).filter(
-          (p) => p.category.toLowerCase() === "bike"
+        // Only keep products with category "gear"
+        const gearProducts = (data.products || []).filter(
+          (p) => p.category.toLowerCase() === "gear"
         );
 
-        setBikes(bikeProducts);
+        setGear(gearProducts);
       } catch {
         setError("Something went wrong");
       } finally {
@@ -46,7 +46,7 @@ function Bikes() {
       } catch {}
     }
 
-    fetchBikes();
+    fetchGear();
   }, [token, BASE_URL]);
 
   const addToCart = async (productId) => {
@@ -72,7 +72,7 @@ function Bikes() {
     }
   };
 
-  const deleteBike = async (productId) => {
+  const deleteGear = async (productId) => {
     if (!window.confirm("Delete this product?")) return;
 
     try {
@@ -82,52 +82,52 @@ function Bikes() {
       });
 
       if (!res.ok) throw new Error();
-      setBikes((prev) => prev.filter((b) => b._id !== productId));
+      setGear((prev) => prev.filter((g) => g._id !== productId));
     } catch {
       alert("Delete failed");
     }
   };
 
-  if (loading) return <p className="bikes-loading">Loading bikes...</p>;
+  if (loading) return <p className="bikes-loading">Loading gear...</p>;
   if (error) return <p className="bikes-error">{error}</p>;
 
   return (
     <div className="bikes-page">
-      <h1 className="bikes-title">Bikes</h1>
+      <h1 className="bikes-title">Gear</h1>
 
       <div className="products-grid">
-        {bikes.map((bike) => (
-          <div key={bike._id} className="product-card">
+        {gear.map((item) => (
+          <div key={item._id} className="product-card">
             <div className="image-wrapper">
-              <img src={`${BASE_URL}${bike.imageUrl}`} alt={bike.name} />
+              <img src={`${BASE_URL}${item.imageUrl}`} alt={item.name} />
             </div>
 
-            <h2 className="bike-name">{bike.name}</h2>
-            <p className="bike-desc">{bike.description}</p>
+            <h2 className="bike-name">{item.name}</h2>
+            <p className="bike-desc">{item.description}</p>
 
             <div className="bike-details">
-              <span><strong>Color:</strong> {bike.color || "—"}</span>
-              <span><strong>Size:</strong> {bike.size || "—"}</span>
-              <span><strong>Category:</strong> {bike.category}</span>
+              <span><strong>Color:</strong> {item.color || "—"}</span>
+              <span><strong>Size:</strong> {item.size || "—"}</span>
+              <span><strong>Category:</strong> {item.category}</span>
             </div>
 
             <div className="bike-meta">
-              <span className="price">₹{bike.price}</span>
-              <span className={bike.stock > 0 ? "in-stock" : "out-stock"}>
-                {bike.stock > 0 ? `In Stock (${bike.stock})` : "Out of Stock"}
+              <span className="price">₹{item.price}</span>
+              <span className={item.stock > 0 ? "in-stock" : "out-stock"}>
+                {item.stock > 0 ? `In Stock (${item.stock})` : "Out of Stock"}
               </span>
             </div>
 
             <button
               className="add-cart-btn"
-              onClick={() => addToCart(bike._id)}
-              disabled={bike.stock === 0}
+              onClick={() => addToCart(item._id)}
+              disabled={item.stock === 0}
             >
               Add to Cart
             </button>
 
             {user?.role === "admin" && (
-              <button className="delete-btn" onClick={() => deleteBike(bike._id)}>
+              <button className="delete-btn" onClick={() => deleteGear(item._id)}>
                 Delete
               </button>
             )}
@@ -138,5 +138,5 @@ function Bikes() {
   );
 }
 
-export default Bikes;
+export default Gear;
 
