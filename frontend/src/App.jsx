@@ -10,6 +10,7 @@ import Cart from "./pages/Cart";
 import Bikes from "./pages/Bikes";
 import Dashboard from "./pages/Dashboard";
 import Gear from "./pages/Gear.jsx"
+import Sales from "./pages/Sales.jsx";
 
 function App() {
   return (
@@ -21,11 +22,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/bikes" element={<Bikes />} />
-			 <Route path="/gear" element={<Gear />} />
+            <Route path="/gear" element={<Gear />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/sales" element={<Sales />} />
           </Routes>
         </main>
 

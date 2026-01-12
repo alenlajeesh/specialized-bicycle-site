@@ -17,7 +17,9 @@ function Hero() {
           stocks last!
         </p>
 
-        <button>Build Yours</button>
+        <button onClick={()=>{
+          window.location.href = "/bikes";
+        }}>Build Yours</button>
       </div>
 
       <div className="hero-image">
